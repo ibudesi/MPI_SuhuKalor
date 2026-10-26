@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran Interaktif: Suhu, Kalor & Termodinamika</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- MathJax for Rendering LaTeX Equations -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#094d74',
+                            800: '#0c4a6e',
+                            accent: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #0369a1 50%, #0d9488 100%);
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-certificate, #printable-certificate * {
+                visibility: visible;
+            }
+            #printable-certificate {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- TOP NAVBAR (Displayed when logged in) -->
+    <nav id="top-navbar" class="hidden sticky top-0 z-50 bg-slate-900 text-white shadow-lg border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="p-2 bg-brand-500 text-white rounded-lg font-bold text-lg"><i class="fa-solid fa-fire-flame-curved"></i></span>
+                    <div>
+                        <h1 class="font-heading font-bold text-sm sm:text-base leading-tight">Fisika Interaktif</h1>
+                        <p class="text-xs text-slate-400">Suhu, Kalor & Termodinamika</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-1" id="nav-links">
+                    <!-- Nav item buttons dynamically managed -->
+                    <button onclick="switchTab('objectives')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition"><i class="fa-solid fa-bullseye mr-1"></i> Tujuan</button>
+                    <button onclick="switchTab('material')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition"><i class="fa-solid fa-book-open mr-1"></i> Materi</button>
+                    <button onclick="switchTab('simulation')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition"><i class="fa-solid fa-flask mr-1"></i> Simulasi</button>
+                    <button onclick="switchTab('practice')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition"><i class="fa-solid fa-pen-ruler mr-1"></i> Latihan</button>
+                    <button onclick="switchTab('quiz')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition"><i class="fa-solid fa-graduation-cap mr-1"></i> Quiz</button>
+                    <button onclick="switchTab('closing')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition"><i class="fa-solid fa-award mr-1"></i> Penutup</button>
+                </div>
+
+                <!-- Student Info Badge & Admin Button -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="openAdminAuthModal()" class="px-2.5 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-semibold flex items-center space-x-1 shadow transition">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span class="hidden sm:inline">Mode Guru</span>
+                    </button>
+
+                    <div class="text-right hidden sm:block">
+                        <div id="user-display-name" class="text-xs font-semibold text-brand-100">Murid</div>
+                        <div id="user-display-class" class="text-[10px] text-slate-400">Kelas</div>
+                    </div>
+                    <button onclick="logout()" title="Keluar / Ganti Akun" class="p-2 text-slate-400 hover:text-red-400 transition">
+                        <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Nav Menu -->
+        <div class="md:hidden border-t border-slate-800 bg-slate-900 px-2 pt-2 pb-3 space-x-1 flex overflow-x-auto text-xs">
+            <button onclick="switchTab('objectives')" class="px-3 py-1.5 rounded bg-slate-800 text-slate-200 whitespace-nowrap">Tujuan</button>
+            <button onclick="switchTab('material')" class="px-3 py-1.5 rounded bg-slate-800 text-slate-200 whitespace-nowrap">Materi</button>
+            <button onclick="switchTab('simulation')" class="px-3 py-1.5 rounded bg-slate-800 text-slate-200 whitespace-nowrap">Simulasi</button>
+            <button onclick="switchTab('practice')" class="px-3 py-1.5 rounded bg-slate-800 text-slate-200 whitespace-nowrap">Latihan</button>
+            <button onclick="switchTab('quiz')" class="px-3 py-1.5 rounded bg-slate-800 text-slate-200 whitespace-nowrap">Quiz</button>
+            <button onclick="switchTab('closing')" class="px-3 py-1.5 rounded bg-slate-800 text-slate-200 whitespace-nowrap">Penutup</button>
+            <button onclick="openAdminAuthModal()" class="px-3 py-1.5 rounded bg-brand-600 text-white font-semibold whitespace-nowrap"><i class="fa-solid fa-user-shield mr-1"></i> Guru</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow flex flex-col justify-center items-center">
+
+        <!-- ================= PAGE 1: LOGIN / LANDING ================= -->
+        <section id="page-login" class="w-full min-h-screen flex items-center justify-center gradient-bg p-4">
+            <div class="max-w-md w-full glass-panel rounded-2xl shadow-2xl p-6 sm:p-8 text-slate-800 relative overflow-hidden border border-white/20">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-brand-500/20 rounded-full blur-2xl"></div>
+                
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-500 text-white mb-3 shadow-lg shadow-brand-500/30">
+                        <i class="fa-solid fa-temperature-arrow-up text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold font-heading text-slate-900">Media Pembelajaran Interaktif</h2>
+                    <p class="text-sm font-semibold text-brand-600 mt-1">Suhu, Kalor & Termodinamika</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Berbasis Fenomena Perubahan Iklim</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap Murid</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="input-name" required placeholder="Masukkan nama lengkap Anda" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm outline-none transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Kelas / Rombel</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </span>
+                            <input type="text" id="input-class" required placeholder="Contoh: XI-1" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-sm outline-none transition">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl shadow-lg shadow-brand-600/30 transition duration-200 transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                        <span>Mulai Belajar</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <!-- DEVELOPER CREDIT -->
+                <div class="mt-8 pt-4 border-t border-slate-200 text-center">
+                    <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Pengembang Multimedia</p>
+                    <p class="text-xs font-bold text-slate-800 mt-1">Desi Susanti, S.Pd., M.Pd.</p>
+                    <p class="text-[11px] text-slate-600">Guru Fisika SMA Negeri 1 Sendawar</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE CONTAINER FOR LOGGED IN USERS ================= -->
+        <div id="app-content" class="hidden w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+            <!-- ================= PAGE 2: TUJUAN PEMBELAJARAN ================= -->
+            <section id="tab-objectives" class="tab-page space-y-6">
+                <div class="bg-gradient-to-r from-brand-700 to-teal-700 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
+                    <div class="max-w-3xl">
+                        <span class="bg-white/20 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider">Kurikulum Merdeka</span>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-bold mt-2">Capaian & Tujuan Pembelajaran</h2>
+                        <p class="text-teal-100 text-sm mt-2">Selamat datang di modul digital Fisika. Pelajari bagaimana hukum kalor dan termodinamika mengatur keseimbangan energi di planet Bumi.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- CP Card -->
+                    <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-3 bg-brand-100 text-brand-600 rounded-xl">
+                                <i class="fa-solid fa-compass text-xl"></i>
+                            </div>
+                            <h3 class="font-heading font-bold text-lg text-slate-900">Capaian Pembelajaran (CP)</h3>
+                        </div>
+                        <p class="text-slate-700 leading-relaxed text-sm sm:text-base bg-slate-50 p-4 rounded-xl border border-slate-100 font-medium italic">
+                            "Menganalisis konsep kalor dan termodinamika serta penerapannya untuk mengidentifikasi fenomena perubahan iklim."
+                        </p>
+                        
+                        <h4 class="font-heading font-bold text-sm text-slate-800 mt-6 mb-3">Tujuan Pembelajaran (TP):</h4>
+                        <ul class="space-y-3 text-sm text-slate-600">
+                            <li class="flex items-start space-x-2">
+                                <i class="fa-solid fa-circle-check text-brand-500 mt-1"></i>
+                                <span>Menjelaskan konsep suhu, skala termometer, serta mekanisme pemuaian pada zat padat, cair, dan gas.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <i class="fa-solid fa-circle-check text-brand-500 mt-1"></i>
+                                <span>Menganalisis konsep kalor, kapasitas kalor, kalor laten, dan menerapkan <strong>Asas Black</strong> dalam penyelesaian masalah energi termal.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <i class="fa-solid fa-circle-check text-brand-500 mt-1"></i>
+                                <span>Menganalisis perpindahan kalor (konduksi, konveksi, radiasi) dan keterkaitannya dengan fenomena Efek Rumah Kaca & Perubahan Iklim.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <i class="fa-solid fa-circle-check text-brand-500 mt-1"></i>
+                                <span>Menerapkan Hukum I & II Termodinamika pada sistem ideal serta menganalisis efisiensi energi.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Panduan Belajar -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-3 bg-amber-100 text-amber-600 rounded-xl">
+                                <i class="fa-solid fa-map text-xl"></i>
+                            </div>
+                            <h3 class="font-heading font-bold text-lg text-slate-900">Panduan Belajar</h3>
+                        </div>
+                        <ol class="space-y-4 text-xs sm:text-sm text-slate-600">
+                            <li class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-xs shrink-0">1</span>
+                                <span>Pahami rangkuman materi ringkas dan rumus-rumus utama di menu <strong>Materi</strong>.</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-xs shrink-0">2</span>
+                                <span>Uji pemahaman visual Anda melalui laboratorium virtual pada menu <strong>Simulasi</strong>.</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-xs shrink-0">3</span>
+                                <span>Kerjakan <strong>Latihan Soal</strong> mandiri dan pelajari langkah-langkah penyelesaiannya.</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-xs shrink-0">4</span>
+                                <span>Selesaikan evaluasi pada menu <strong>Quiz</strong> (LOTS, HOTS, & Studi Kasus) untuk memperoleh <strong>Sertifikat Ketuntasan</strong>.</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PAGE 3: MATERI PEMBELAJARAN ================= -->
+            <section id="tab-material" class="tab-page hidden space-y-6">
+                <!-- Section Header -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-heading font-bold text-slate-900">Materi Pembelajaran Utama</h2>
+                    <p class="text-sm text-slate-500 mt-1">Suhu, Kalor, Perpindahan Energi & Termodinamika Lingkungan</p>
+
+                    <!-- Sub Tab Navigation -->
+                    <div class="flex border-b border-slate-200 mt-6 overflow-x-auto">
+                        <button onclick="switchSubMaterial('m1')" id="subnav-m1" class="submat-btn border-b-2 border-brand-500 text-brand-600 py-2 px-4 text-sm font-semibold whitespace-nowrap">1. Suhu & Pemuaian</button>
+                        <button onclick="switchSubMaterial('m2')" id="subnav-m2" class="submat-btn border-b-2 border-transparent text-slate-500 hover:text-slate-700 py-2 px-4 text-sm font-semibold whitespace-nowrap">2. Kalor & Asas Black</button>
+                        <button onclick="switchSubMaterial('m3')" id="subnav-m3" class="submat-btn border-b-2 border-transparent text-slate-500 hover:text-slate-700 py-2 px-4 text-sm font-semibold whitespace-nowrap">3. Perpindahan Kalor & Perubahan Iklim</button>
+                        <button onclick="switchSubMaterial('m4')" id="subnav-m4" class="submat-btn border-b-2 border-transparent text-slate-500 hover:text-slate-700 py-2 px-4 text-sm font-semibold whitespace-nowrap">4. Hukum Termodinamika</button>
+                    </div>
+                </div>
+
+                <!-- SUB-MATERI 1: Suhu & Pemuaian -->
+                <div id="submat-m1" class="submat-content bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <div>
+                        <h3 class="text-lg font-heading font-bold text-brand-700">A. Suhu dan Pemuaian Zat</h3>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                            <strong>Suhu</strong> adalah ukuran derajat panas atau dinginnya suatu benda yang mencerminkan energi kinetik rata-rata molekul di dalamnya. 
+                            Benda yang dipanaskan umumnya akan mengalami <strong>pemuaian</strong> (pertambahan panjang, luas, atau volume) akibat peningkatan getaran antar-partikel.
+                        </p>
+                    </div>
+
+                    <!-- Rumus Grid Suhu & Pemuaian -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Card 1: Konversi Skala Termometer -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">1. Konversi Skala Termometer</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-base sm:text-lg border shadow-sm text-slate-900 overflow-x-auto">
+                                    $$\frac{C}{5} = \frac{R}{4} = \frac{F - 32}{9} = \frac{K - 273}{5}$$
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel & Satuan:</p>
+                                <p>• <strong>$C$</strong> = Suhu dalam skala Celsius ($^\circ\text{C}$)</p>
+                                <p>• <strong>$R$</strong> = Suhu dalam skala Reamur ($^\circ\text{R}$)</p>
+                                <p>• <strong>$F$</strong> = Suhu dalam skala Fahrenheit ($^\circ\text{F}$)</p>
+                                <p>• <strong>$K$</strong> = Suhu dalam skala Kelvin ($\text{K}$) — <em>Skala Mutlak / SI</em></p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Pemuaian Zat Padat (Panjang, Luas, Volume) -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">2. Pemuaian Panjang, Luas & Volume</span>
+                                <div class="my-3 bg-white p-3 rounded-lg font-mono text-xs sm:text-sm border shadow-sm text-slate-900 space-y-1.5">
+                                    <p>$$\Delta L = L_0 \cdot \alpha \cdot \Delta T \implies L_t = L_0(1 + \alpha \Delta T)$$</p>
+                                    <p>$$\Delta A = A_0 \cdot \beta \cdot \Delta T \implies A_t = A_0(1 + \beta \Delta T) \quad (\beta = 2\alpha)$$</p>
+                                    <p>$$\Delta V = V_0 \cdot \gamma \cdot \Delta T \implies V_t = V_0(1 + \gamma \Delta T) \quad (\gamma = 3\alpha)$$</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel & Satuan:</p>
+                                <p>• <strong>$\Delta L, \Delta A, \Delta V$</strong> = Pertambahan panjang ($\text{m}$), luas ($\text{m}^2$), & volume ($\text{m}^3$)</p>
+                                <p>• <strong>$L_0, A_0, V_0$</strong> = Ukuran awal sebelum pemuaian ($\text{m}$, $\text{m}^2$, $\text{m}^3$)</p>
+                                <p>• <strong>$L_t, A_t, V_t$</strong> = Ukuran akhir setelah dipanaskan ($\text{m}$, $\text{m}^2$, $\text{m}^3$)</p>
+                                <p>• <strong>$\alpha, \beta, \gamma$</strong> = Koefisien muai panjang, luas, & volume ($\text{K}^{-1}$ atau $^\circ\text{C}^{-1}$)</p>
+                                <p>• <strong>$\Delta T$</strong> = Perubahan suhu ($\Delta T = T_t - T_0$) dalam $^\circ\text{C}$ atau $\text{K}$</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-teal-50 border-l-4 border-teal-500 p-4 rounded-r-xl">
+                        <h4 class="font-bold text-sm text-teal-900"><i class="fa-solid fa-leaf mr-2"></i>Aplikasi Real / Fenomena Iklim:</h4>
+                        <p class="text-xs sm:text-sm text-teal-800 mt-1">
+                            <strong>Ekspansi Termal Air Laut:</strong> Peningkatan suhu global memicu pemuaian volume ($\Delta V = \gamma V_0 \Delta T$) air laut di seluruh dunia. Fenomena ini merupakan penyebab utama kenaikan permukaan air laut selain pencairan es kutub.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SUB-MATERI 2: Kalor & Asas Black -->
+                <div id="submat-m2" class="submat-content hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <div>
+                        <h3 class="text-lg font-heading font-bold text-brand-700">B. Kalor, Perubahan Wujud & Asas Black</h3>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                            <strong>Kalor ($Q$)</strong> adalah bentuk energi termal yang berpindah dari benda bersuhu lebih tinggi ke benda bersuhu lebih rendah. Kalor dapat mengubah suhu benda atau mengubah wujud zat tanpa mengubah suhunya (kalor laten).
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Card 1: Kalor Perubahan Suhu -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">1. Perubahan Suhu</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-base border shadow-sm text-slate-900">
+                                    $$Q = m \cdot c \cdot \Delta T$$
+                                    <span class="text-xs text-slate-500 block mt-1">atau $Q = C \cdot \Delta T$</span>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel:</p>
+                                <p>• <strong>$Q$</strong> = Kalor diserap/dilepas ($\text{Joule}$ / $\text{J}$)</p>
+                                <p>• <strong>$m$</strong> = Massa benda ($\text{kg}$)</p>
+                                <p>• <strong>$c$</strong> = Kalor jenis zat ($\text{J/kg}^\circ\text{C}$ atau $\text{J/kg}\cdot\text{K}$)</p>
+                                <p>• <strong>$C$</strong> = Kapasitas kalor ($C = m \cdot c$) ($\text{J}/^\circ\text{C}$)</p>
+                                <p>• <strong>$\Delta T$</strong> = Perubahan suhu ($T_2 - T_1$) ($^\circ\text{C}$)</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Kalor Laten -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">2. Perubahan Wujud (Laten)</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-base border shadow-sm text-slate-900">
+                                    $$Q = m \cdot L$$
+                                    <span class="text-xs text-slate-500 block mt-1">(Suatu fase transisi, $\Delta T = 0$)</span>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel:</p>
+                                <p>• <strong>$Q$</strong> = Kalor laten perubahan wujud ($\text{J}$)</p>
+                                <p>• <strong>$m$</strong> = Massa zat yang berubah wujud ($\text{kg}$)</p>
+                                <p>• <strong>$L$</strong> = Kalor lebur/beku atau kalor uap/embun ($\text{J/kg}$)</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Asas Black -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">3. Asas Black</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-xs sm:text-sm border shadow-sm text-slate-900">
+                                    $$Q_{\text{lepas}} = Q_{\text{terima}}$$
+                                    <span class="text-[11px] text-slate-500 block mt-1">$m_1 c_1 (T_1 - T_c) = m_2 c_2 (T_c - T_2)$</span>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel:</p>
+                                <p>• <strong>$Q_{\text{lepas}}$</strong> = Kalor dilepas benda panas ($\text{J}$)</p>
+                                <p>• <strong>$Q_{\text{terima}}$</strong> = Kalor diserap benda dingin ($\text{J}$)</p>
+                                <p>• <strong>$T_1, T_2$</strong> = Suhu awal benda 1 & 2 ($^\circ\text{C}$)</p>
+                                <p>• <strong>$T_c$</strong> = Suhu akhir kesetimbangan ($^\circ\text{C}$)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-MATERI 3: Perpindahan Kalor & Perubahan Iklim -->
+                <div id="submat-m3" class="submat-content hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <div>
+                        <h3 class="text-lg font-heading font-bold text-brand-700">C. Perpindahan Kalor & Fenomena Perubahan Iklim</h3>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                            Perpindahan kalor terjadi melalui 3 mekanisme utama: Konduksi (hantaran tanpa perpindahan massa), Konveksi (aliran massa fluida), dan Radiasi (gelombang elektromagnetik).
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Konduksi -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">1. Konduksi</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-sm border shadow-sm text-slate-900">
+                                    $$H = \frac{Q}{t} = \frac{k \cdot A \cdot \Delta T}{L}$$
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel:</p>
+                                <p>• <strong>$H$</strong> = Laju hantaran kalor ($\text{J/s}$ / $\text{Watt}$)</p>
+                                <p>• <strong>$k$</strong> = Konduktivitas termal bahan ($\text{W/m}\cdot\text{K}$)</p>
+                                <p>• <strong>$A$</strong> = Luas penampang lintang ($\text{m}^2$)</p>
+                                <p>• <strong>$\Delta T$</strong> = Beda suhu kedua ujung ($^\circ\text{C}$ / $\text{K}$)</p>
+                                <p>• <strong>$L$</strong> = Tebal/panjang penghantar ($\text{m}$)</p>
+                            </div>
+                        </div>
+
+                        <!-- Konveksi -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">2. Konveksi</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-sm border shadow-sm text-slate-900">
+                                    $$H = \frac{Q}{t} = h \cdot A \cdot \Delta T$$
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel:</p>
+                                <p>• <strong>$H$</strong> = Laju aliran kalor konveksi ($\text{Watt}$)</p>
+                                <p>• <strong>$h$</strong> = Koefisien konveksi fluida ($\text{W/m}^2\cdot\text{K}$)</p>
+                                <p>• <strong>$A$</strong> = Luas permukaan bidang kontak ($\text{m}^2$)</p>
+                                <p>• <strong>$\Delta T$</strong> = Beda suhu permukaan & fluida ($\text{K}$)</p>
+                            </div>
+                        </div>
+
+                        <!-- Radiasi -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between space-y-3">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">3. Radiasi (Stefan-Boltzmann)</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-sm border shadow-sm text-slate-900">
+                                    $$P = \frac{Q}{t} = e \cdot \sigma \cdot A \cdot T^4$$
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel:</p>
+                                <p>• <strong>$P$</strong> = Daya pancaran radiasi ($\text{Watt}$ / $\text{J/s}$)</p>
+                                <p>• <strong>$e$</strong> = Emisivitas bahan ($0 \le e \le 1$)</p>
+                                <p>• <strong>$\sigma$</strong> = $5{,}67 \times 10^{-8} \text{ W/m}^2\text{K}^4$ (Tetapan)</p>
+                                <p>• <strong>$A$</strong> = Luas permukaan radiasi ($\text{m}^2$)</p>
+                                <p>• <strong>$T$</strong> = Suhu mutlak permukaan ($\text{Kelvin}$)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Climate Change Link -->
+                    <div class="bg-amber-50 border border-amber-200 p-5 rounded-xl space-y-3">
+                        <h4 class="font-bold text-slate-900 text-sm flex items-center">
+                            <i class="fa-solid fa-earth-americas text-amber-600 mr-2 text-lg"></i>
+                            Keterkaitan Fisika dengan Fenomena Perubahan Iklim (Climate Change):
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-700">
+                            <div class="bg-white p-3 rounded-lg border border-amber-100">
+                                <strong>1. Efek Rumah Kaca (Radiasi Netto):</strong> Atmosfer menyerap dan memancarkan kembali radiasi inframerah dari Bumi ($P \propto T^4$). Gas rumah kaca (CO₂, CH₄) meningkatkan ketebalan isolasi termal atmosfer.
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-amber-100">
+                                <strong>2. Arus Konveksi Global (El Niño / La Niña):</strong> Perbedaan pemanasan radiasi matahari di ekuator memicu arus konveksi udara & laut skala raksasa yang mempengaruhi iklim global.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-MATERI 4: Hukum Termodinamika -->
+                <div id="submat-m4" class="submat-content hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <div>
+                        <h3 class="text-lg font-heading font-bold text-brand-700">D. Hukum Termodinamika</h3>
+                        <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+                            Termodinamika mempelajari hubungan antara kalor, usaha (kerja), dan energi dalam pada sistem makroskopis.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Hukum I Termodinamika -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">1. Hukum I Termodinamika</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-base border shadow-sm text-slate-900">
+                                    $$Q = \Delta U + W$$
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1.5">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan & Kaidah Tanda:</p>
+                                <p>• <strong>$Q$</strong> = Kalor diserap ($+$) / dilepas ($-$) oleh sistem ($\text{Joule}$)</p>
+                                <p>• <strong>$\Delta U$</strong> = Perubahan energi dalam ($+ \text{suhu naik}$, $- \text{suhu turun}$) ($\text{Joule}$)</p>
+                                <p>• <strong>$W$</strong> = Usaha dilakukan sistem ($+ \text{memuai}$, $- \text{kompresi}$) ($\text{Joule}$)</p>
+                                <p class="pt-1 text-[11px] text-slate-500 border-t"><strong>Usaha Isobarik ($P$ Tetap):</strong> $W = P \cdot \Delta V = P(V_2 - V_1)$</p>
+                            </div>
+                        </div>
+
+                        <!-- Hukum II & Efisiensi Mesin Carnot -->
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
+                            <div>
+                                <span class="px-2.5 py-1 bg-brand-100 text-brand-700 rounded-md text-xs font-bold uppercase tracking-wide">2. Hukum II & Efisiensi Mesin Carnot</span>
+                                <div class="text-center my-4 bg-white p-3 rounded-lg font-mono text-base border shadow-sm text-slate-900">
+                                    $$\eta = \left(1 - \frac{T_C}{T_H}\right) \times 100\%$$
+                                    <span class="text-xs text-slate-500 block mt-1">Usaha Mesin: $W = Q_H - Q_C$</span>
+                                </div>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                                <p class="font-bold text-slate-900 border-b pb-1 mb-1.5"><i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Keterangan Variabel:</p>
+                                <p>• <strong>$\eta$</strong> = Efisiensi termal mesin ideal Carnot ($\%$)</p>
+                                <p>• <strong>$T_H$</strong> = Suhu mutlak reservoir tinggi ($\text{Kelvin}$ / $\text{K}$)</p>
+                                <p>• <strong>$T_C$</strong> = Suhu mutlak reservoir rendah ($\text{Kelvin}$ / $\text{K}$)</p>
+                                <p>• <strong>$Q_H, Q_C$</strong> = Kalor diserap dari reservoir panas & dibuang ke reservoir dingin ($\text{J}$)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PAGE 4: SIMULASI INTERAKTIF ================= -->
+            <section id="tab-simulation" class="tab-page hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-heading font-bold text-slate-900">Laboratorium Virtual: Asas Black</h2>
+                            <p class="text-sm text-slate-500">Simulasikan pencampuran dua fluida/zat dengan massa dan suhu berbeda untuk menemukan suhu akhir campuran ($T_c$).</p>
+                        </div>
+                        <span class="px-3 py-1 bg-teal-100 text-teal-800 font-semibold text-xs rounded-full self-start md:self-auto"><i class="fa-solid fa-sliders mr-1"></i> Interactive Simulator</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Control Panel -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                        <h3 class="font-heading font-bold text-slate-800 border-b pb-2 text-sm uppercase tracking-wider">Parameter Zat Awal</h3>
+
+                        <!-- Zat 1 (Panas) -->
+                        <div class="space-y-3 bg-red-50/50 p-4 rounded-xl border border-red-100">
+                            <span class="text-xs font-bold text-red-600 uppercase flex items-center"><i class="fa-solid fa-fire text-red-500 mr-1.5"></i> Zat 1 (Panas)</span>
+                            
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                    <span>Massa ($m_1$):</span>
+                                    <span id="val-m1" class="font-bold">0.5 kg</span>
+                                </div>
+                                <input type="range" id="sim-m1" min="0.1" max="2.0" step="0.1" value="0.5" oninput="runSimulation()" class="w-full accent-red-500">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                    <span>Suhu ($T_1$):</span>
+                                    <span id="val-t1" class="font-bold">80 °C</span>
+                                </div>
+                                <input type="range" id="sim-t1" min="50" max="100" step="1" value="80" oninput="runSimulation()" class="w-full accent-red-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs text-slate-600 mb-1">Jenis Bahan 1:</label>
+                                <select id="sim-c1" onchange="runSimulation()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="4200">Air ($c = 4200 \text{ J/kg}^\circ\text{C}$)</option>
+                                    <option value="900">Aluminium ($c = 900 \text{ J/kg}^\circ\text{C}$)</option>
+                                    <option value="390">Tembaga ($c = 390 \text{ J/kg}^\circ\text{C}$)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Zat 2 (Dingin) -->
+                        <div class="space-y-3 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                            <span class="text-xs font-bold text-blue-600 uppercase flex items-center"><i class="fa-solid fa-snowflake text-blue-500 mr-1.5"></i> Zat 2 (Dingin)</span>
+                            
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                    <span>Massa ($m_2$):</span>
+                                    <span id="val-m2" class="font-bold">0.5 kg</span>
+                                </div>
+                                <input type="range" id="sim-m2" min="0.1" max="2.0" step="0.1" value="0.5" oninput="runSimulation()" class="w-full accent-blue-500">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-600 mb-1">
+                                    <span>Suhu ($T_2$):</span>
+                                    <span id="val-t2" class="font-bold">20 °C</span>
+                                </div>
+                                <input type="range" id="sim-t2" min="0" max="40" step="1" value="20" oninput="runSimulation()" class="w-full accent-blue-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs text-slate-600 mb-1">Jenis Bahan 2:</label>
+                                <select id="sim-c2" onchange="runSimulation()" class="w-full text-xs p-2 rounded-lg border border-slate-300 bg-white">
+                                    <option value="4200">Air ($c = 4200 \text{ J/kg}^\circ\text{C}$)</option>
+                                    <option value="900">Aluminium ($c = 900 \text{ J/kg}^\circ\text{C}$)</option>
+                                    <option value="390">Tembaga ($c = 390 \text{ J/kg}^\circ\text{C}$)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Visual & Result -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-heading font-bold text-slate-800 mb-4 text-sm uppercase tracking-wider">Visualisasi Bejana & Termometer</h3>
+                            
+                            <div class="relative w-full h-64 bg-slate-900 rounded-xl overflow-hidden flex items-center justify-center p-4">
+                                <canvas id="simCanvas" width="500" height="240" class="w-full h-full object-contain"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Mathematical Proof Box -->
+                        <div class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-600 uppercase">Suhu Akhir Campuran ($T_c$):</span>
+                                <span id="sim-result-tc" class="text-2xl font-bold font-mono text-brand-600">50.00 °C</span>
+                            </div>
+                            <p id="sim-math-steps" class="text-xs text-slate-500 font-mono bg-white p-2 rounded border">
+                                $Q_{\text{lepas}} = Q_{\text{terima}} \implies m_1 c_1 (T_1 - T_c) = m_2 c_2 (T_c - T_2)$
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PAGE 5: LATIHAN SOAL ================= -->
+            <section id="tab-practice" class="tab-page hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-heading font-bold text-slate-900">Latihan Soal & Pembahasan</h2>
+                    <p class="text-sm text-slate-500 mt-1">Uji pemahaman penerapan rumus-rumus fisika secara terpandu.</p>
+                </div>
+
+                <!-- Practice Container -->
+                <div id="practice-list" class="space-y-6">
+                    <!-- Practice items dynamically populated by JS -->
+                </div>
+            </section>
+
+            <!-- ================= PAGE 6: QUIZ & EVALUASI ================= -->
+            <section id="tab-quiz" class="tab-page hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-heading font-bold text-slate-900">Quiz & Evaluasi Ketuntasan</h2>
+                        <p class="text-sm text-slate-500">Terdiri dari 10 Soal LOTS, 10 Soal HOTS, dan 2 Soal Berbasis Kasus Lingkungan.</p>
+                    </div>
+                    <div id="quiz-timer-badge" class="hidden px-4 py-2 bg-amber-100 text-amber-800 font-mono font-bold rounded-xl text-sm self-start sm:self-auto">
+                        <i class="fa-solid fa-clock mr-1"></i> Waktu: <span id="timer-text">30:00</span>
+                    </div>
+                </div>
+
+                <!-- Start Quiz Screen -->
+                <div id="quiz-start-screen" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center space-y-4">
+                    <div class="w-16 h-16 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+                    <h3 class="text-xl font-heading font-bold text-slate-900">Petunjuk Evaluasi</h3>
+                    <p class="text-sm text-slate-600 max-w-xl mx-auto leading-relaxed">
+                        Evaluasi ini digunakan untuk mengukur tingkat pemahaman Anda. Nilai ketuntasan minimal (KKM) adalah <strong class="text-brand-600 font-bold">80</strong> untuk menerbitkan <strong>Sertifikat Ketuntasan Belajar Digital</strong>.
+                    </p>
+                    <button onclick="startQuiz()" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-0.5">
+                        Mulai Kerjakan Quiz Sekarang
+                    </button>
+                </div>
+
+                <!-- Quiz Interface (Hidden initial) -->
+                <div id="quiz-box" class="hidden grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- Question Area -->
+                    <div class="lg:col-span-3 bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span id="question-category" class="px-3 py-1 bg-brand-100 text-brand-700 font-bold text-xs rounded-full">LOTS</span>
+                                <span id="question-number" class="text-xs font-semibold text-slate-400">Soal 1 dari 22</span>
+                            </div>
+
+                            <p id="question-text" class="text-base sm:text-lg text-slate-800 font-medium mb-6 leading-relaxed">
+                                Pertanyaan akan dimuat di sini...
+                            </p>
+
+                            <!-- Options -->
+                            <div id="options-container" class="space-y-3">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Quiz Controls -->
+                        <div class="flex justify-between items-center mt-8 pt-4 border-t border-slate-200">
+                            <button onclick="prevQuestion()" id="btn-prev" class="px-4 py-2 border border-slate-300 text-slate-600 font-semibold rounded-xl text-sm hover:bg-slate-50 disabled:opacity-50">
+                                <i class="fa-solid fa-arrow-left mr-1"></i> Sebelumnya
+                            </button>
+                            <button onclick="nextQuestion()" id="btn-next" class="px-5 py-2 bg-brand-600 text-white font-semibold rounded-xl text-sm hover:bg-brand-700">
+                                Selanjutnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                            <button onclick="submitQuiz()" id="btn-submit" class="hidden px-5 py-2 bg-teal-600 text-white font-bold rounded-xl text-sm hover:bg-teal-700 shadow-md">
+                                <i class="fa-solid fa-paper-plane mr-1"></i> Selesaikan Quiz
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Question Grid Palette -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <h4 class="font-heading font-bold text-sm text-slate-800 border-b pb-2">Navigasi Soal</h4>
+                        <div id="question-palette" class="grid grid-cols-5 gap-2">
+                            <!-- Palette buttons generated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Result Screen -->
+                <div id="quiz-result-screen" class="hidden bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center space-y-6">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 text-4xl mb-2">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-2xl font-heading font-bold text-slate-900">Hasil Evaluasi Pembelajaran</h3>
+                    
+                    <div class="max-w-md mx-auto bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center text-sm text-slate-600">
+                            <span>Nama Siswa:</span>
+                            <span id="res-student-name" class="font-bold text-slate-800">-</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm text-slate-600">
+                            <span>Kelas:</span>
+                            <span id="res-student-class" class="font-bold text-slate-800">-</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm text-slate-600">
+                            <span>Skor Akhir:</span>
+                            <span id="res-score" class="font-bold text-xl text-brand-600">0 / 100</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm text-slate-600 pt-2 border-t">
+                            <span>Status Ketuntasan:</span>
+                            <span id="res-status" class="py-1 px-3 rounded-lg text-xs font-bold uppercase tracking-wider bg-slate-200 text-slate-700">-</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-3 pt-4">
+                        <button onclick="resetQuiz()" class="px-5 py-2.5 border border-slate-300 text-slate-700 font-semibold rounded-xl text-sm hover:bg-slate-50">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Ulangi Quiz
+                        </button>
+                        <button onclick="switchTab('closing')" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-sm shadow-md">
+                            <i class="fa-solid fa-award mr-1"></i> Lihat Sertifikat Ketuntasan
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PAGE 7: PENUTUP & SERTIFIKAT ================= -->
+            <section id="tab-closing" class="tab-page hidden space-y-6">
+
+                <!-- Lock Notice Banner if Reflection / KKM incomplete -->
+                <div id="cert-lock-banner" class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-start space-x-3">
+                    <div class="p-2 bg-amber-500 text-white rounded-lg shrink-0 mt-0.5">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <div class="text-xs sm:text-sm text-amber-900">
+                        <p class="font-bold">Sertifikat Ketuntasan Masih Terkunci</p>
+                        <p id="cert-lock-message" class="mt-0.5 text-amber-800">
+                            Untuk membuka sertifikat dan dapat mencetaknya, pastikan Anda telah menyelesaikan Quiz (mencapai KKM 80) dan <strong>mengisi serta mengirimkan Lembar Refleksi Pembelajaran</strong> di bagian bawah halaman ini.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Certificate Card (Printable) -->
+                <div id="printable-certificate" class="bg-white p-8 sm:p-12 rounded-3xl shadow-xl border-4 border-brand-500/20 relative overflow-hidden text-center space-y-6 transition duration-300 opacity-60 pointer-events-none filter blur-[2px]">
+                    <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-brand-600 via-teal-500 to-amber-500"></div>
+                    
+                    <div class="flex justify-center items-center space-x-2 text-brand-600">
+                        <i class="fa-solid fa-award text-4xl"></i>
+                    </div>
+
+                    <div>
+                        <span class="text-xs font-bold tracking-widest text-slate-400 uppercase">Sertifikat Ketuntasan Belajar</span>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-extrabold text-slate-900 mt-1">Suhu, Kalor & Termodinamika</h2>
+                        <p class="text-xs text-slate-500">Berbasis Fenomena Perubahan Iklim</p>
+                    </div>
+
+                    <div class="py-4">
+                        <p class="text-xs text-slate-500 uppercase tracking-wider">Diberikan Kepada:</p>
+                        <h3 id="cert-student-name" class="text-xl sm:text-2xl font-bold font-heading text-brand-700 mt-1">[ Nama Lengkap Siswa ]</h3>
+                        <p id="cert-student-class" class="text-xs font-semibold text-slate-600 mt-0.5">Kelas: [ Kelas ]</p>
+                    </div>
+
+                    <div class="max-w-xs mx-auto bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <p class="text-xs text-slate-500">Nilai Evaluasi Akhir (KKM 80):</p>
+                        <p id="cert-score" class="text-2xl font-extrabold text-emerald-600">0 / 100</p>
+                    </div>
+
+                    <p class="text-xs text-slate-600 max-w-lg mx-auto leading-relaxed">
+                        Telah menyelesaikan seluruh rangkaian aktivitas media pembelajaran interaktif Fisika materi Suhu, Kalor, dan Termodinamika dengan capaian analisis fenomena perubahan iklim serta mengisi refleksi pembelajaran.
+                    </p>
+
+                    <div class="pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
+                        <div class="text-left">
+                            <p class="font-bold text-slate-700">SMA Negeri 1 Sendawar</p>
+                            <p>Kabupaten Kutai Barat, Kalimantan Timur</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-slate-800">Pengembang Multimedia:</p>
+                            <p class="font-bold text-brand-700">Desi Susanti, S.Pd., M.Pd.</p>
+                            <p class="text-[10px] text-slate-400">Guru Fisika SMAN 1 Sendawar</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons & Reflection -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center flex flex-col justify-center space-y-4">
+                        <i class="fa-solid fa-print text-3xl text-slate-400"></i>
+                        <h4 class="font-heading font-bold text-slate-800 text-sm">Cetak / Simpan Sertifikat</h4>
+                        <p class="text-xs text-slate-500">Unduh sertifikat hasil belajar Anda dalam format PDF atau cetak secara langsung setelah menyelesaikan seluruh tugas.</p>
+                        <button id="btn-print-cert" disabled onclick="window.print()" class="w-full py-2.5 bg-slate-300 text-slate-500 cursor-not-allowed font-semibold rounded-xl text-sm transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>Cetak Sertifikat</span>
+                        </button>
+                    </div>
+
+                    <!-- Refleksi Siswa -->
+                    <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-heading font-bold text-slate-800 text-sm flex items-center">
+                                <i class="fa-solid fa-comment-dots text-brand-500 mr-2"></i>
+                                Lembar Refleksi Pembelajaran Siswa
+                            </h4>
+                            <span id="reflection-status-tag" class="text-[10px] font-bold px-2.5 py-1 bg-amber-100 text-amber-800 rounded-md uppercase">Belum Diisi</span>
+                        </div>
+                        <form onsubmit="saveReflection(event)" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">1. Apa hal paling menarik yang Anda pelajari mengenai hubungan termodinamika dan perubahan iklim?</label>
+                                <textarea id="refl-q1" required rows="2" class="w-full p-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Tuliskan pendapat Anda..."></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">2. Apakah simulasi virtual Asas Black membantu Anda memahami konsep perpindahan kalor?</label>
+                                <textarea id="refl-q2" required rows="2" class="w-full p-2.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Tuliskan pengalaman Anda..."></textarea>
+                            </div>
+                            <button id="btn-submit-refl" type="submit" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl text-xs shadow transition flex items-center space-x-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Kirim Refleksi & Buka Sertifikat</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ================= ADMIN / GURU DASHBOARD MODAL ================= -->
+    <div id="admin-auth-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-slate-800 relative space-y-4">
+            <button onclick="closeAdminAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="font-heading font-bold text-lg text-slate-900">Verifikasi Mode Guru</h3>
+                <p class="text-xs text-slate-500">Masukkan PIN Keamanan Guru untuk mengakses Dashboard Monitoring Real-Time.</p>
+            </div>
+
+            <form onsubmit="verifyAdminPin(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">PIN Akses Guru (Default: 7777)</label>
+                    <input type="password" id="admin-pin-input" required placeholder="Masukkan PIN" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-center text-lg tracking-widest font-mono focus:ring-2 focus:ring-brand-500 outline-none">
+                </div>
+                <p id="admin-pin-error" class="hidden text-xs text-red-500 text-center font-semibold"><i class="fa-solid fa-circle-exclamation mr-1"></i> PIN yang Anda masukkan salah!</p>
+                <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-sm shadow transition">
+                    Masuk Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN ADMIN DASHBOARD CONTAINER -->
+    <div id="admin-dashboard-screen" class="hidden fixed inset-0 z-50 bg-slate-100 overflow-y-auto flex flex-col">
+        <!-- Dashboard Header -->
+        <header class="bg-slate-900 text-white px-6 py-4 shadow-md flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="p-2 bg-brand-500 text-white rounded-lg text-lg"><i class="fa-solid fa-chart-line"></i></span>
+                <div>
+                    <h2 class="font-heading font-bold text-base sm:text-lg">Dashboard Monitoring Guru (Real-Time)</h2>
+                    <p class="text-xs text-slate-400">SMA Negeri 1 Sendawar • Suhu, Kalor & Termodinamika</p>
+                </div>
+            </div>
+            <button onclick="closeAdminDashboard()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1 border border-slate-700">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Keluar Mode Guru</span>
+            </button>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="flex-grow p-4 sm:p-6 max-w-7xl w-full mx-auto space-y-6">
+            <!-- Summary Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Total Murid</p>
+                        <h3 id="stat-total-students" class="text-2xl font-bold font-heading text-slate-900">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Tuntas ($\ge 80$)</p>
+                        <h3 id="stat-passed" class="text-2xl font-bold font-heading text-emerald-600">0 (0%)</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Belum Tuntas ($< 80$)</p>
+                        <h3 id="stat-failed" class="text-2xl font-bold font-heading text-red-600">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Rata-Rata Nilai</p>
+                        <h3 id="stat-avg-score" class="text-2xl font-bold font-heading text-slate-900">0.0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Card & Filter Bar -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden space-y-4 p-5">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div>
+                        <h3 class="font-heading font-bold text-slate-800 text-base">Hasil Capaian & Refleksi Siswa</h3>
+                        <p class="text-xs text-slate-500">Data terbarui secara langsung (real-time) dari pengerjaan siswa.</p>
+                    </div>
+
+                    <div class="flex items-center space-x-2 w-full sm:w-auto">
+                        <input type="text" id="admin-search-input" oninput="filterAdminTable()" placeholder="Cari nama siswa..." class="px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none w-full sm:w-48">
+                        <select id="admin-filter-class" onchange="filterAdminTable()" class="px-3 py-1.5 text-xs rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 outline-none bg-white">
+                            <option value="">Semua Kelas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submissions Table -->
+                <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-left text-xs text-slate-700">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase font-semibold">
+                            <tr>
+                                <th class="p-3">Waktu</th>
+                                <th class="p-3">Nama Siswa</th>
+                                <th class="p-3">Kelas</th>
+                                <th class="p-3">Skor Quiz</th>
+                                <th class="p-3">Status KKM (80)</th>
+                                <th class="p-3">Status Refleksi</th>
+                                <th class="p-3 text-right">Detail Refleksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="7" class="p-6 text-center text-slate-400 italic">Belum ada data pengerjaan siswa.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Detail Refleksi Siswa -->
+    <div id="refl-detail-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 text-slate-800 relative space-y-4">
+            <button onclick="closeReflModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-heading font-bold text-base text-slate-900 border-b pb-2"><i class="fa-solid fa-comment-dots text-brand-500 mr-2"></i>Jawaban Refleksi Siswa</h3>
+            <div id="refl-detail-content" class="space-y-3 text-xs text-slate-700">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE INITIALIZATION & REALTIME DATA LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by system or fallback
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'media-fisika-termodinamika';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+
+        // In-memory fallback array if Firebase is not configured
+        window.allSubmissions = [];
+
+        if (firebaseConfig) {
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Auth state setup
+                if (initialAuthToken) {
+                    signInWithCustomToken(auth, initialAuthToken).catch(err => signInAnonymously(auth));
+                } else {
+                    signInAnonymously(auth);
+                }
+
+                auth.onAuthStateChanged((user) => {
+                    currentUser = user;
+                    if (user) {
+                        initRealtimeListener();
+                    }
+                });
+            } catch (e) {
+                console.warn("Firebase fallback mode activated:", e);
+            }
+        }
+
+        // Firestore real-time listener for public submissions
+        function initRealtimeListener() {
+            if (!db || !currentUser) return;
+            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+            
+            onSnapshot(colRef, (snapshot) => {
+                const list = [];
+                snapshot.forEach(doc => {
+                    list.push({ id: doc.id, ...doc.data() });
+                });
+                // Sort by timestamp in memory
+                list.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+                window.allSubmissions = list;
+                if (window.renderAdminData) {
+                    window.renderAdminData();
+                }
+            }, (err) => {
+                console.warn("Firestore error:", err);
+            });
+        }
+
+        // Global function to save student attempt to Firestore / Local memory
+        window.saveSubmissionToDb = async function(data) {
+            const payload = {
+                ...data,
+                timestamp: serverTimestamp(),
+                createdAt: new Date().toISOString()
+            };
+
+            // Local fallback store
+            const existingIdx = window.allSubmissions.findIndex(item => item.studentName === data.studentName && item.studentClass === data.studentClass);
+            if (existingIdx >= 0) {
+                window.allSubmissions[existingIdx] = { ...window.allSubmissions[existingIdx], ...payload };
+            } else {
+                window.allSubmissions.unshift(payload);
+            }
+
+            if (db && currentUser) {
+                try {
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+                    await addDoc(colRef, payload);
+                } catch (err) {
+                    console.warn("Failed saving to Firestore, kept in local memory:", err);
+                }
+            }
+
+            if (window.renderAdminData) window.renderAdminData();
+        };
+    </script>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // State Management
+        let studentData = { name: '', class: '' };
+        let activeTab = 'objectives';
+        let quizScore = 0;
+        let quizAnswers = {};
+        let currentQIndex = 0;
+        let reflectionCompleted = false;
+
+        // KKM CONSTANT = 80
+        const KKM_SCORE = 80;
+
+        // Practice Questions Data
+        const practiceData = [
+            {
+                title: "Soal 1: Konversi Skala Suhu Termometer",
+                question: "Suhu rata-rata permukaan bumi dilaporkan mengalami kenaikan sebesar $1.5^\\circ\\text{C}$ akibat pemanasan global. Berapakah kenaikan suhu ini jika dinyatakan dalam skala Kelvin dan Fahrenheit?",
+                options: [
+                    "1.5 K dan 2.7 °F",
+                    "274.5 K dan 34.7 °F",
+                    "1.5 K dan 34.7 °F",
+                    "274.5 K dan 2.7 °F"
+                ],
+                solution: `
+                    <p><strong>Langkah Penyelesaian:</strong></p>
+                    <p>1. Perubahan suhu $1^\\circ\\text{C}$ sama nilainya dengan $1 \\text{ K}$ karena interval skalanya sama ($100$ skala).</p>
+                    <p>$$\\Delta T_{\\text{Kelvin}} = \\Delta T_{\\text{Celsius}} = 1.5\\text{ K}$$</p>
+                    <p>2. Untuk perbandingan interval Celsius ke Fahrenheit ($5 : 9$):</p>
+                    <p>$$\\Delta T_{\\text{Fahrenheit}} = \\frac{9}{5} \\times \\Delta T_{\\text{Celsius}} = \\frac{9}{5} \\times 1.5 = 2.7^\\circ\\text{F}$$</p>
+                    <p><strong>Jawaban Benar: A</strong></p>
+                `
+            },
+            {
+                title: "Soal 2: Asas Black (Pencampuran Air)",
+                question: "Sebanyak $0.2 \\text{ kg}$ air panas bersuhu $90^\\circ\\text{C}$ dicampurkan dengan $0.3 \\text{ kg}$ air dingin bersuhu $20^\\circ\\text{C}$ dalam wadah terisolasi. Jika $c_{\\text{air}} = 4200 \\text{ J/kg}^\\circ\\text{C}$, berapa suhu akhir campuran ($T_c$)?",
+                options: [
+                    "48 °C",
+                    "55 °C",
+                    "60 °C",
+                    "35 °C"
+                ],
+                solution: `
+                    <p><strong>Langkah Penyelesaian:</strong></p>
+                    <p>Gunakan hukum Asas Black ($Q_{\\text{lepas}} = Q_{\\text{terima}}$):</p>
+                    <p>$$m_1 c (T_1 - T_c) = m_2 c (T_c - T_2)$$</p>
+                    <p>$$0.2 \\times (90 - T_c) = 0.3 \\times (T_c - 20)$$</p>
+                    <p>$$18 - 0.2 T_c = 0.3 T_c - 6 \\implies 0.5 T_c = 24 \\implies T_c = 48^\\circ\\text{C}$$</p>
+                    <p><strong>Jawaban Benar: A</strong></p>
+                `
+            },
+            {
+                title: "Soal 3: Laju Radiasi Termal (Efek Rumah Kaca)",
+                question: "Suatu permukaan daratan dengan luas $10 \\text{ m}^2$ dan emisivitas $e = 0.9$ berada pada suhu $300 \\text{ K}$. Hitung daya radiasi termal yang dipancarkan permukaan tersebut! ($\\sigma = 5.67 \\times 10^{-8} \\text{ W/m}^2\\text{K}^4$)",
+                options: [
+                    "4133.4 Watt",
+                    "5103.0 Watt",
+                    "3827.2 Watt",
+                    "4592.7 Watt"
+                ],
+                solution: `
+                    <p><strong>Langkah Penyelesaian:</strong></p>
+                    <p>Gunakan Hukum Stefan-Boltzmann ($P = e \\cdot \\sigma \\cdot A \\cdot T^4$):</p>
+                    <p>$$P = 0.9 \\times (5.67 \\times 10^{-8}) \\times 10 \\times (300)^4$$</p>
+                    <p>$$P = 5.103 \\times 10^{-7} \\times (8.1 \\times 10^9) = 4133.43\\text{ Watt}$$</p>
+                    <p><strong>Jawaban Benar: A</strong></p>
+                `
+            },
+            {
+                title: "Soal 4: Hukum I Termodinamika & Usaha Gas",
+                question: "Suatu sistem gas ideal menyerap kalor sebesar $1500 \\text{ J}$ dari lingkungan dan melakukan usaha sebesar $600 \\text{ J}$. Tentukan perubahan energi dalam ($\\Delta U$) sistem tersebut!",
+                options: [
+                    "+ 900 J",
+                    "- 900 J",
+                    "+ 2100 J",
+                    "- 2100 J"
+                ],
+                solution: `
+                    <p><strong>Langkah Penyelesaian:</strong></p>
+                    <p>Berdasarkan Hukum I Termodinamika ($Q = \\Delta U + W$):</p>
+                    <p>Menyerap kalor $\\implies Q = +1500\\text{ J}$</p>
+                    <p>Melakukan usaha $\\implies W = +600\\text{ J}$</p>
+                    <p>$$\\Delta U = Q - W = 1500 - 600 = +900\\text{ J}$$</p>
+                    <p>Energi dalam sistem meningkat sebesar $900\\text{ J}$.</p>
+                    <p><strong>Jawaban Benar: A</strong></p>
+                `
+            }
+        ];
+
+        // Quiz Questions Data (10 LOTS, 10 HOTS, 2 Case-based)
+        const quizQuestions = [
+            // LOTS (1-10)
+            { type: "LOTS", text: "1. Alat yang digunakan untuk mengukur derajat panas atau suhu suatu benda secara kuantitatif adalah...", options: ["Kalorimeter", "Termometer", "Barometer", "Hydrometer"], ans: 1 },
+            { type: "LOTS", text: "2. Nilai suhu $300 \\text{ K}$ jika dikonversikan ke dalam skala Celsius adalah...", options: ["27 °C", "30 °C", "57 °C", "100 °C"], ans: 0 },
+            { type: "LOTS", text: "3. Energi termal yang berpindah dari benda bersuhu tinggi ke benda bersuhu rendah disebut...", options: ["Kerja", "Kalor", "Daya", "Entropi"], ans: 1 },
+            { type: "LOTS", text: "4. Rumus kalor untuk mengubah suhu suatu benda bermassa $m$ adalah...", options: ["Q = m.L", "Q = m.c.ΔT", "Q = k.A.ΔT/L", "Q = P.t"], ans: 1 },
+            { type: "LOTS", text: "5. Peristiwa perpindahan kalor pada zat padat tanpa disertai perpindahan partikel penyusunnya disebut...", options: ["Konveksi", "Radiasi", "Konduksi", "Evaporasi"], ans: 2 },
+            { type: "LOTS", text: "6. Pernyataan Asas Black yang benar dalam sistem tertutup terisolasi adalah...", options: ["Q lepas > Q terima", "Q lepas = Q terima", "Q lepas < Q terima", "Q lepas = 0"], ans: 1 },
+            { type: "LOTS", text: "7. Pemuaian volume pada zat cair secara matematis dirumuskan dengan hubungan koefisien muai...", options: ["γ = α", "γ = 2α", "γ = 3α", "γ = 4α"], ans: 2 },
+            { type: "LOTS", text: "8. Satuan standar Internasional (SI) untuk mengukur kalor jenis ($c$) adalah...", options: ["J/kg°C", "Kal/g°C", "Joule", "Watt"], ans: 0 },
+            { type: "LOTS", text: "9. Bunyi Hukum I Termodinamika merupakan bentuk pernyataan dari...", options: ["Hukum Kekekalan Momentum", "Hukum Kekekalan Energi", "Hukum Kekekalan Massa", "Hukum Entropi Maksimum"], ans: 1 },
+            { type: "LOTS", text: "10. Kalor laten adalah kalor yang dibutuhkan oleh suatu benda untuk...", options: ["Menaikkan suhu 1°C", "Mengubah wujud tanpa perubahan suhu", "Mengubah massa zat", "Memuaikan panjang zat"], ans: 1 },
+
+            // HOTS (11-20)
+            { type: "HOTS", text: "11. Sebuah kubus kuningan ($c = 380 \\text{ J/kg K}$) jatuh dari ketinggian $100 \\text{ m}$. Jika seluruh energi potensialnya berubah menjadi kalor yang diserap kubus, kenaikan suhunya adalah... ($g = 10 \\text{ m/s}^2$)", options: ["2.63 °C", "5.26 °C", "0.26 °C", "10.0 °C"], ans: 0 },
+            { type: "HOTS", text: "12. Dua buah batang logam A dan B disambungkan. Konduktivitas termal $k_A = 2 k_B$. Jika panjang dan luas penampang kedua batang sama, maka suhu pada titik sambungan saat steady-state jika ujung A $100^\\circ\\text{C}$ dan B $0^\\circ\\text{C}$ adalah...", options: ["50 °C", "66.7 °C", "33.3 °C", "75 °C"], ans: 1 },
+            { type: "HOTS", text: "13. Es bermassa $100 \\text{ gram}$ pada suhu $-10^\\circ\\text{C}$ dicampur dengan air $200 \\text{ gram}$ suhu $50^\\circ\\text{C}$. ($c_{es}=0.5, L_{lebur}=80, c_{air}=1 \\text{ cal/g}^\circ\text{C}$). Suhu akhir campuran adalah...", options: ["0 °C", "5 °C", "10 °C", "15 °C"], ans: 0 },
+            { type: "HOTS", text: "14. Suatu mesin Carnot menyerap kalor dari reservoir $800 \\text{ K}$ sebesar $1000 \\text{ J}$ dan membuang kalor ke reservoir dingin $400 \\text{ K}$. Usaha yang dihasilkan mesin adalah...", options: ["200 J", "400 J", "500 J", "800 J"], ans: 2 },
+            { type: "HOTS", text: "15. Jika suhu mutlak suatu benda hitam dinaikkan menjadi 2 kali semula, maka laju radiasi kalor yang dipancarkannya menjadi... kali semula.", options: ["2", "4", "8", "16"], ans: 3 },
+            { type: "HOTS", text: "16. Sebuah bejana kaca ($V_0 = 1000 \\text{ mL}$) terisi penuh alkohol pada suhu $10^\\circ\\text{C}$. Jika dipanaskan hingga $60^\\circ\\text{C}$, banyaknya alkohol yang tumpah adalah... ($\\gamma_{alkohol} = 1.1 \\times 10^{-3} /^\circ\text{C}, \\gamma_{kaca} = 2.7 \\times 10^{-5} /^\circ\text{C}$)", options: ["53.6 mL", "55.0 mL", "48.2 mL", "60.0 mL"], ans: 0 },
+            { type: "HOTS", text: "17. Suatu gas ideal mengalami ekspansi isobarik pada tekanan $2 \\times 10^5 \\text{ Pa}$ sehingga volumenya berubah dari $2 \\text{ m}^3$ menjadi $5 \\text{ m}^3$. Usaha luar yang dilakukan gas adalah...", options: ["300 kJ", "600 kJ", "100 kJ", "1000 kJ"], ans: 1 },
+            { type: "HOTS", text: "18. Pernyataan yang BENAR mengenai fenomena anomali air antara suhu $0^\\circ\\text{C}$ hingga $4^\\circ\\text{C}$ adalah...", options: ["Volumenya membesar saat dipanaskan", "Massa jenisnya mencapai maksimum pada 4°C", "Massa jenisnya paling kecil pada 4°C", "Air langsung membeku sepenuhnya"], ans: 1 },
+            { type: "HOTS", text: "19. Peningkatan gas rumah kaca di atmosfer menyebabkan radiasi gelombang panjang inframerah tertahan. Mekanisme utama perpindahan kalor yang terlibat dalam pemerangkapan energi ini adalah...", options: ["Konduksi molekuler", "Radiasi absorption & re-emission", "Konveksi bebas", "Adveksi atmosferik"], ans: 1 },
+            { type: "HOTS", text: "20. Suatu gas melakukan proses adiabatik di mana tidak ada kalor yang keluar/masuk ($Q=0$). Jika gas melakukan usaha positif ($W>0$), maka energi dalam sistem akan...", options: ["Meningkat dan suhu naik", "Menurun dan suhu turun", "Tetap konstan", "Suhu menjadi 0 Kelvin"], ans: 1 },
+
+            // Berbasis Kasus (21-22)
+            { type: "KASUS 1", text: "21. [Studi Kasus Pencairan Es Kutub] Lapisan es di Greenland menyerap radiasi netto matahari akibat penurunan Albedo (daya pantul). Jika $1.000 \\text{ kg}$ es pada suhu $0^\\circ\\text{C}$ meleleh menjadi air $0^\\circ\\text{C}$ ($L_{f} = 3.34 \\times 10^5 \\text{ J/kg}$), berapa total energi kalor radiasi yang telah diserap oleh es tersebut?", options: ["3.34 × 10⁸ J", "3.34 × 10⁵ J", "1.00 × 10⁶ J", "6.68 × 10⁸ J"], ans: 0 },
+            { type: "KASUS 2", text: "22. [Studi Kasus Urban Heat Island] Perkotaan cenderung memiliki suhu lebih tinggi daripada desa karena bahan beton menyerap radiasi surya secara intensif. Jika atap gedung beton dilapisi cat putih reflektif yang meningkatkan emisivitas radiasi pantul, dampak termodinamikanya adalah...", options: ["Menurunkan nilai emisi radiasi infra merah yang diserap gedung", "Meningkatkan kalor konduksi ke dalam ruangan", "Meningkatkan laju pemuaian beton", "Menghilangkan perpindahan kalor konveksi"], ans: 0 }
+        ];
+
+        // Init Engine
+        window.onload = function() {
+            renderPractice();
+            runSimulation();
+        };
+
+        // User Login Handler
+        function handleLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('input-name').value;
+            const cls = document.getElementById('input-class').value;
+
+            if (name && cls) {
+                studentData.name = name;
+                studentData.class = cls;
+
+                document.getElementById('user-display-name').innerText = name;
+                document.getElementById('user-display-class').innerText = cls;
+
+                document.getElementById('page-login').classList.add('hidden');
+                document.getElementById('top-navbar').classList.remove('hidden');
+                document.getElementById('app-content').classList.remove('hidden');
+
+                switchTab('objectives');
+            }
+        }
+
+        function logout() {
+            document.getElementById('page-login').classList.remove('hidden');
+            document.getElementById('top-navbar').classList.add('hidden');
+            document.getElementById('app-content').classList.add('hidden');
+        }
+
+        // Helper MathJax Re-Typeset
+        function retypesetMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        // Navigation
+        function switchTab(tabId) {
+            activeTab = tabId;
+            document.querySelectorAll('.tab-page').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            if (tabId === 'closing') {
+                updateCertificate();
+            }
+            retypesetMath();
+        }
+
+        function switchSubMaterial(mId) {
+            document.querySelectorAll('.submat-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.submat-btn').forEach(el => {
+                el.classList.remove('border-brand-500', 'text-brand-600');
+                el.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            document.getElementById(`submat-${mId}`).classList.remove('hidden');
+            document.getElementById(`subnav-${mId}`).classList.add('border-brand-500', 'text-brand-600');
+            document.getElementById(`subnav-${mId}`).classList.remove('border-transparent', 'text-slate-500');
+            
+            retypesetMath();
+        }
+
+        // SIMULATION LOGIC & CANVAS DRAWING
+        function runSimulation() {
+            const m1 = parseFloat(document.getElementById('sim-m1').value);
+            const t1 = parseFloat(document.getElementById('sim-t1').value);
+            const c1 = parseFloat(document.getElementById('sim-c1').value);
+
+            const m2 = parseFloat(document.getElementById('sim-m2').value);
+            const t2 = parseFloat(document.getElementById('sim-t2').value);
+            const c2 = parseFloat(document.getElementById('sim-c2').value);
+
+            document.getElementById('val-m1').innerText = m1 + ' kg';
+            document.getElementById('val-t1').innerText = t1 + ' °C';
+            document.getElementById('val-m2').innerText = m2 + ' kg';
+            document.getElementById('val-t2').innerText = t2 + ' °C';
+
+            // Calculate Tc: m1*c1*(T1 - Tc) = m2*c2*(Tc - T2)
+            const tc = ((m1 * c1 * t1) + (m2 * c2 * t2)) / ((m1 * c1) + (m2 * c2));
+
+            document.getElementById('sim-result-tc').innerText = tc.toFixed(2) + ' °C';
+            
+            // Dynamic Math Steps Display
+            const mathBox = document.getElementById('sim-math-steps');
+            if (mathBox) {
+                mathBox.innerHTML = `$$Q_{\\text{lepas}} = Q_{\\text{terima}} \\implies ${m1} \\cdot ${c1} \\cdot (${t1} - T_c) = ${m2} \\cdot ${c2} \\cdot (T_c - ${t2}) \\implies T_c = ${tc.toFixed(2)}^\\circ\\text{C}$$`;
+            }
+            retypesetMath();
+
+            // Draw Canvas Visual
+            const canvas = document.getElementById('simCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Beaker
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(180, 40, 140, 160);
+
+            // Water Level height based on m1 + m2
+            const totalM = m1 + m2;
+            const fluidHeight = Math.min(140, totalM * 45);
+            
+            // Thermal Color interpolation based on Tc (Blue: 0C -> Red: 100C)
+            const ratio = Math.min(Math.max(tc / 100, 0), 1);
+            const r = Math.round(239 * ratio + 59 * (1 - ratio));
+            const g = Math.round(68 * ratio + 130 * (1 - ratio));
+            const b = Math.round(68 * ratio + 246 * (1 - ratio));
+            
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.75)`;
+            ctx.fillRect(182, 200 - fluidHeight, 136, fluidHeight);
+
+            // Thermometer Visual
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillRect(245, 10, 10, 180);
+            ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+            ctx.fillRect(247, 200 - (tc * 1.5), 6, tc * 1.5);
+            ctx.beginPath();
+            ctx.arc(250, 195, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Text overlay
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '12px Inter';
+            ctx.fillText(`Air Campuran: ${tc.toFixed(1)}°C`, 190, 30);
+        }
+
+        // RENDER PRACTICE QUESTIONS
+        function renderPractice() {
+            const container = document.getElementById('practice-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            practiceData.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4';
+                card.innerHTML = `
+                    <h3 class="font-heading font-bold text-slate-800 text-base">${item.title}</h3>
+                    <p class="text-sm text-slate-700 leading-relaxed">${item.question}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        ${item.options.map((opt, oIdx) => `
+                            <div class="p-3 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer flex items-center space-x-2">
+                                <span class="w-5 h-5 rounded-full bg-slate-100 font-bold flex items-center justify-center">${String.fromCharCode(65 + oIdx)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button onclick="toggleSolution(${idx})" class="text-xs font-semibold text-brand-600 hover:text-brand-700 flex items-center space-x-1">
+                        <i class="fa-solid fa-key"></i>
+                        <span>Lihat Langkah Pembahasan</span>
+                    </button>
+                    <div id="sol-${idx}" class="hidden p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 leading-relaxed space-y-2">
+                        ${item.solution}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            retypesetMath();
+        }
+
+        function toggleSolution(idx) {
+            const el = document.getElementById(`sol-${idx}`);
+            if (el) {
+                el.classList.toggle('hidden');
+                if (!el.classList.contains('hidden')) {
+                    retypesetMath();
+                }
+            }
+        }
+
+        // QUIZ SYSTEM LOGIC
+        function startQuiz() {
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-box').classList.remove('hidden');
+            document.getElementById('quiz-timer-badge').classList.remove('hidden');
+
+            currentQIndex = 0;
+            quizAnswers = {};
+            renderPalette();
+            loadQuestion(0);
+        }
+
+        function renderPalette() {
+            const palette = document.getElementById('question-palette');
+            if (!palette) return;
+            palette.innerHTML = '';
+
+            quizQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `palette-${idx}`;
+                btn.className = `w-8 h-8 rounded-lg text-xs font-bold border ${quizAnswers[idx] !== undefined ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600'}`;
+                btn.innerText = idx + 1;
+                btn.onclick = () => loadQuestion(idx);
+                palette.appendChild(btn);
+            });
+        }
+
+        function loadQuestion(idx) {
+            currentQIndex = idx;
+            const q = quizQuestions[idx];
+
+            document.getElementById('question-category').innerText = q.type;
+            document.getElementById('question-number').innerText = `Soal ${idx + 1} dari ${quizQuestions.length}`;
+            document.getElementById('question-text').innerText = q.text;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, oIdx) => {
+                const isSelected = quizAnswers[idx] === oIdx;
+                const optEl = document.createElement('div');
+                optEl.className = `p-4 border rounded-xl cursor-pointer text-sm flex items-center space-x-3 transition ${isSelected ? 'border-brand-500 bg-brand-50/50 font-semibold' : 'border-slate-200 hover:bg-slate-50'}`;
+                optEl.onclick = () => selectOption(idx, oIdx);
+                optEl.innerHTML = `
+                    <span class="w-6 h-6 rounded-full border ${isSelected ? 'bg-brand-600 text-white border-brand-600' : 'border-slate-300'} flex items-center justify-center text-xs font-bold shrink-0">${String.fromCharCode(65 + oIdx)}</span>
+                    <span class="text-slate-800">${opt}</span>
+                `;
+                container.appendChild(optEl);
+            });
+
+            // Button state
+            document.getElementById('btn-prev').disabled = idx === 0;
+            if (idx === quizQuestions.length - 1) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-submit').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-submit').classList.add('hidden');
+            }
+
+            retypesetMath();
+        }
+
+        function selectOption(qIdx, optIdx) {
+            quizAnswers[qIdx] = optIdx;
+            const btn = document.getElementById(`palette-${qIdx}`);
+            if (btn) {
+                btn.className = 'w-8 h-8 rounded-lg text-xs font-bold border bg-brand-600 text-white';
+            }
+            loadQuestion(qIdx);
+        }
+
+        function prevQuestion() {
+            if (currentQIndex > 0) loadQuestion(currentQIndex - 1);
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < quizQuestions.length - 1) loadQuestion(currentQIndex + 1);
+        }
+
+        function submitQuiz() {
+            let correctCount = 0;
+            quizQuestions.forEach((q, idx) => {
+                if (quizAnswers[idx] === q.ans) correctCount++;
+            });
+
+            quizScore = Math.round((correctCount / quizQuestions.length) * 100);
+
+            document.getElementById('quiz-box').classList.add('hidden');
+            document.getElementById('quiz-result-screen').classList.remove('hidden');
+
+            document.getElementById('res-student-name').innerText = studentData.name;
+            document.getElementById('res-student-class').innerText = studentData.class;
+            document.getElementById('res-score').innerText = `${quizScore} / 100`;
+
+            const statusBadge = document.getElementById('res-status');
+            if (quizScore >= KKM_SCORE) {
+                statusBadge.innerText = "TUNTAS / LULUS (KKM 80)";
+                statusBadge.className = "py-1.5 px-3 rounded-lg text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800";
+            } else {
+                statusBadge.innerText = "BELUM TUNTAS (KKM 80)";
+                statusBadge.className = "py-1.5 px-3 rounded-lg text-xs font-bold uppercase tracking-wider bg-red-100 text-red-800";
+            }
+
+            // Save to Firestore / Database
+            if (window.saveSubmissionToDb) {
+                window.saveSubmissionToDb({
+                    studentName: studentData.name,
+                    studentClass: studentData.class,
+                    score: quizScore,
+                    passed: quizScore >= KKM_SCORE,
+                    reflectionAnswers: null
+                });
+            }
+
+            // Kirim ke Google Sheets (sheet "Hasil Quiz")
+            sendToGoogleSheets({
+                action: "saveQuiz",
+                nama: studentData.name,
+                kelas: studentData.class,
+                nilai: quizScore,
+                kkm: KKM_SCORE,
+                status: quizScore >= KKM_SCORE ? "TUNTAS" : "BELUM TUNTAS"
+            });
+
+            updateCertificate();
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            document.getElementById('quiz-start-screen').classList.remove('hidden');
+        }
+
+        function updateCertificate() {
+            const certName = document.getElementById('cert-student-name');
+            const certClass = document.getElementById('cert-student-class');
+            const certScore = document.getElementById('cert-score');
+            
+            if (certName) certName.innerText = studentData.name || '[ Nama Lengkap Siswa ]';
+            if (certClass) certClass.innerText = `Kelas: ${studentData.class || '[ Kelas ]'}`;
+            if (certScore) certScore.innerText = `${quizScore} / 100`;
+
+            const certBox = document.getElementById('printable-certificate');
+            const certLockBanner = document.getElementById('cert-lock-banner');
+            const printBtn = document.getElementById('btn-print-cert');
+            const lockMsg = document.getElementById('cert-lock-message');
+
+            if (quizScore >= KKM_SCORE && reflectionCompleted) {
+                // UNLOCKED
+                if (certBox) {
+                    certBox.classList.remove('opacity-60', 'pointer-events-none', 'blur-[2px]');
+                }
+                if (certLockBanner) certLockBanner.classList.add('hidden');
+                if (printBtn) {
+                    printBtn.disabled = false;
+                    printBtn.className = "w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-sm shadow-md transition flex items-center justify-center space-x-2";
+                }
+            } else {
+                // LOCKED
+                if (certBox) {
+                    certBox.classList.add('opacity-60', 'pointer-events-none', 'blur-[2px]');
+                }
+                if (certLockBanner) certLockBanner.classList.remove('hidden');
+                
+                if (quizScore < KKM_SCORE && !reflectionCompleted) {
+                    lockMsg.innerHTML = "Sertifikat terkunci karena nilai Quiz Anda belum mencapai KKM 80 (Skor saat ini: " + quizScore + ") dan Lembar Refleksi belum dikirim.";
+                } else if (quizScore < KKM_SCORE) {
+                    lockMsg.innerHTML = "Sertifikat terkunci karena nilai Quiz Anda belum mencapai KKM 80 (Skor saat ini: " + quizScore + "). Silakan kerjakan ulang Quiz.";
+                } else if (!reflectionCompleted) {
+                    lockMsg.innerHTML = "Selamat! Nilai Quiz Anda telah memenuhi KKM 80. Silakan <strong>isi dan kirimkan Lembar Refleksi Pembelajaran</strong> di bawah ini untuk membuka Sertifikat Ketuntasan.";
+                }
+
+                if (printBtn) {
+                    printBtn.disabled = true;
+                    printBtn.className = "w-full py-2.5 bg-slate-300 text-slate-500 cursor-not-allowed font-semibold rounded-xl text-sm transition flex items-center justify-center space-x-2";
+                }
+            }
+        }
+
+        function saveReflection(e) {
+            e.preventDefault();
+            const q1 = document.getElementById('refl-q1').value;
+            const q2 = document.getElementById('refl-q2').value;
+
+            reflectionCompleted = true;
+
+            const statusTag = document.getElementById('reflection-status-tag');
+            if (statusTag) {
+                statusTag.innerText = "Sudah Diisi";
+                statusTag.className = "text-[10px] font-bold px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-md uppercase";
+            }
+
+            // Save Reflection to DB
+            if (window.saveSubmissionToDb) {
+                window.saveSubmissionToDb({
+                    studentName: studentData.name,
+                    studentClass: studentData.class,
+                    score: quizScore,
+                    passed: quizScore >= KKM_SCORE,
+                    reflectionAnswers: { q1, q2 }
+                });
+            }
+
+            // Kirim ke Google Sheets (sheet "Refleksi")
+            sendToGoogleSheets({
+                action: "saveRefleksi",
+                nama: studentData.name,
+                kelas: studentData.class,
+                pemahaman: q1,
+                kesan: q2
+            });
+
+            updateCertificate();
+
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-lg text-xs font-bold z-50 flex items-center space-x-2';
+            notification.innerHTML = '<i class="fa-solid fa-circle-check text-base"></i> <span>Refleksi tersimpan! ' + (quizScore >= KKM_SCORE ? 'Sertifikat Ketuntasan Belajar kini telah terbuka.' : 'Silakan tingkatkan nilai Quiz hingga KKM 80.') + '</span>';
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 4000);
+        }
+
+        // ================= ADMIN DASHBOARD FUNCTIONS =================
+        function openAdminAuthModal() {
+            document.getElementById('admin-pin-input').value = '';
+            document.getElementById('admin-pin-error').classList.add('hidden');
+            document.getElementById('admin-auth-modal').classList.remove('hidden');
+        }
+
+        function closeAdminAuthModal() {
+            document.getElementById('admin-auth-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('admin-pin-input').value;
+            if (pin === '1234') {
+                closeAdminAuthModal();
+                document.getElementById('admin-dashboard-screen').classList.remove('hidden');
+                loadAdminDataFromSheets();
+            } else {
+                document.getElementById('admin-pin-error').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('admin-dashboard-screen').classList.add('hidden');
+        }
+// FUNGSI KHUSUS MENGAMBIL DATA DARI GOOGLE SHEETS
+async function loadAdminDataFromSheets() {
+    const tbody = document.getElementById('admin-table-body');
+    if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-500">Memuat data dari Google Sheets...</td></tr>';
+    }
+
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL);
+        const data = await response.json();
+        if (!Array.isArray(data)) throw new Error("Respon bukan array: " + JSON.stringify(data));
+
+        // Jika siswa mengerjakan berulang, ambil pengerjaan TERAKHIR per nama+kelas
+        const latest = {};
+        data.forEach(item => {
+            const key = String(item.nama || '').trim().toLowerCase() + '|' + String(item.kelas || '').trim().toLowerCase();
+            latest[key] = item;
+        });
+
+        window.allSubmissions = Object.values(latest).reverse().map(item => ({
+            dateStr: item.waktu || '-',
+            studentName: item.nama || 'Anonim',
+            studentClass: item.kelas || '-',
+            score: Number(item.nilai) || 0,
+            reflectionAnswers: item.refleksi || null
+        }));
+    } catch (err) {
+        console.error("Gagal mengambil data dari Google Sheets:", err);
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-red-500">Gagal memuat data dari Google Sheets. Periksa URL Apps Script & izin deployment (Anyone).</td></tr>';
+        }
+        return;
+    }
+
+    renderAdminData();
+}
+        function renderAdminData() {
+            const list = window.allSubmissions || [];
+            const tbody = document.getElementById('admin-table-body');
+            const classSelect = document.getElementById('admin-filter-class');
+            if (!tbody) return;
+
+            // Populate unique classes in dropdown
+            const classes = [...new Set(list.map(i => i.studentClass).filter(Boolean))];
+            if (classSelect) {
+                const currentVal = classSelect.value;
+                classSelect.innerHTML = '<option value="">Semua Kelas</option>' + classes.map(c => `<option value="${c}">${c}</option>`).join('');
+                classSelect.value = currentVal;
+            }
+
+            // Compute Filtered Data
+            const searchTerm = (document.getElementById('admin-search-input')?.value || '').toLowerCase();
+            const filterClass = document.getElementById('admin-filter-class')?.value || '';
+
+            const filtered = list.filter(item => {
+                const matchName = (item.studentName || '').toLowerCase().includes(searchTerm);
+                const matchClass = !filterClass || item.studentClass === filterClass;
+                return matchName && matchClass;
+            });
+
+            // Summary statistics
+            const total = list.length;
+            const passedCount = list.filter(i => (i.score || 0) >= KKM_SCORE).length;
+            const failedCount = total - passedCount;
+            const avgScore = total > 0 ? (list.reduce((acc, curr) => acc + (curr.score || 0), 0) / total).toFixed(1) : '0.0';
+            const passPercentage = total > 0 ? Math.round((passedCount / total) * 100) : 0;
+
+            document.getElementById('stat-total-students').innerText = total;
+            document.getElementById('stat-passed').innerText = `${passedCount} (${passPercentage}%)`;
+            document.getElementById('stat-failed').innerText = failedCount;
+            document.getElementById('stat-avg-score').innerText = avgScore;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400 italic">Belum ada data pengerjaan siswa yang sesuai.</td></tr>`;
+                return;
+            }
+
+            window.filteredSubmissions = filtered;
+            tbody.innerHTML = filtered.map((item, idx) => {
+                const isPassed = (item.score || 0) >= KKM_SCORE;
+                const hasRefl = item.reflectionAnswers && item.reflectionAnswers.q1;
+                const dateStr = item.dateStr || (item.createdAt ? new Date(item.createdAt).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }) : 'Baru saja');
+
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3 font-mono text-slate-400 text-[11px]">${dateStr}</td>
+                        <td class="p-3 font-bold text-slate-800">${item.studentName || 'Anonim'}</td>
+                        <td class="p-3 font-semibold text-slate-600">${item.studentClass || '-'}</td>
+                        <td class="p-3 font-mono font-bold ${isPassed ? 'text-emerald-600' : 'text-red-600'} text-sm">${item.score || 0}</td>
+                        <td class="p-3">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPassed ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'} uppercase">
+                                ${isPassed ? 'TUNTAS' : 'BELUM TUNTAS'}
+                            </span>
+                        </td>
+                        <td class="p-3">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${hasRefl ? 'bg-teal-100 text-teal-800' : 'bg-amber-100 text-amber-800'} uppercase">
+                                ${hasRefl ? 'Selesai' : 'Belum Diisi'}
+                            </span>
+                        </td>
+                        <td class="p-3 text-right">
+                            ${hasRefl ? `<button onclick="showReflDetail(${idx})" class="px-2.5 py-1 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold rounded text-[11px] transition"><i class="fa-solid fa-eye mr-1"></i>Lihat</button>` : `<span class="text-slate-300">-</span>`}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterAdminTable() {
+            renderAdminData();
+        }
+
+        function showReflDetail(idx) {
+            const list = window.filteredSubmissions || [];
+            const item = list[idx];
+            if (!item || !item.reflectionAnswers) return;
+
+            const content = document.getElementById('refl-detail-content');
+            content.innerHTML = `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <p class="font-bold text-slate-800">${item.studentName} (${item.studentClass})</p>
+                    <p class="text-[10px] text-slate-400">Nilai Quiz: <strong class="text-brand-600">${item.score}/100</strong></p>
+                </div>
+                <div class="space-y-1">
+                    <p class="font-bold text-slate-700 text-[11px]">1. Hal paling menarik mengenai termodinamika & iklim:</p>
+                    <p class="bg-amber-50/50 p-2.5 rounded-lg border border-amber-100 text-slate-700">${item.reflectionAnswers.q1}</p>
+                </div>
+                <div class="space-y-1">
+                    <p class="font-bold text-slate-700 text-[11px]">2. Pengalaman simulasi virtual Asas Black:</p>
+                    <p class="bg-teal-50/50 p-2.5 rounded-lg border border-teal-100 text-slate-700">${item.reflectionAnswers.q2}</p>
+                </div>
+            `;
+            document.getElementById('refl-detail-modal').classList.remove('hidden');
+        }
+
+        function closeReflModal() {
+            document.getElementById('refl-detail-modal').classList.add('hidden');
+        }
+    </script>
+    <!-- Bagian Akhir HTML -->
+
+<script>
+  // 1. VARIBEL URL (Tempelkan URL Ibu di sini)
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAXJHOOEhytUmby1jZiza2EK2pezfMqfaZKqupiEiItKXGHFz-asErNaN6JdOivS95TA/exec";
+
+  // 2. FUNGSI PENGIRIM DATA
+  async function sendToGoogleSheets(payload) {
+      try {
+          await fetch(GOOGLE_SCRIPT_URL, {
+              method: "POST",
+              headers: { "Content-Type": "text/plain;charset=utf-8" },
+              body: JSON.stringify(payload)
+          });
+          console.log("Data berhasil dikirim ke Google Sheets:", payload.action);
+      } catch (err) {
+          console.error("Gagal mengirim data:", err);
+      }
+  }
+
+</script>
+</body>
+</html>
